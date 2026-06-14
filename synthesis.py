@@ -241,33 +241,45 @@ def synthesize_chunk(sound_chunk, notes_chunk, chunk_start_sample, frame_period)
     
     bend_first_map = {}
     bend_second_map = {}
+    intervals = []
     
     for n in notes_chunk:
         rel_pos = n['position'] - chunk_start_sample
         s_idx = int(rel_pos / (fs * frame_period / 1000))
         e_idx = int((rel_pos + n['duration']) / (fs * frame_period / 1000))
-        s_idx = max(0, s_idx)
-        e_idx = min(len(blocky_f0), e_idx)
-        if s_idx < e_idx:
-            blocky_f0[s_idx:e_idx] = n['pitch']
-            note_mask[s_idx:e_idx] = False if n["lyric"].split("/")[-1] == "r.wav" else True
-            if s_idx > 0:
-                boundaries.add(s_idx)
-                bend_second_map[s_idx] = n.get('bend_second', 0.05)
-            if e_idx < len(blocky_f0):
-                boundaries.add(e_idx)
-                bend_first_map[e_idx] = n.get('bend_first', 0.05)
+        
+        is_note = False if n["lyric"].split("/")[-1] == "r.wav" else True
+        
+        vis_s_idx = max(0, s_idx)
+        vis_e_idx = min(len(blocky_f0), e_idx)
+        if vis_s_idx < vis_e_idx:
+            blocky_f0[vis_s_idx:vis_e_idx] = n['pitch']
+            note_mask[vis_s_idx:vis_e_idx] = is_note
+            
+        intervals.append((s_idx, e_idx, n['pitch'], is_note))
+        
+        boundaries.add(s_idx)
+        bend_second_map[s_idx] = n.get('bend_second', 0.05)
+        
+        boundaries.add(e_idx)
+        bend_first_map[e_idx] = n.get('bend_first', 0.05)
                 
     smoothed_f0 = np.copy(blocky_f0)
     
+    def get_pitch_and_mask(idx):
+        for s, e, p, is_n in intervals:
+            if s <= idx < e:
+                return p, is_n
+        return 0.0, False
+    
     for b_idx in sorted(list(boundaries)):
-        if not (note_mask[b_idx - 1] and note_mask[b_idx]):
+        v1, is_note1 = get_pitch_and_mask(b_idx - 1)
+        v2, is_note2 = get_pitch_and_mask(b_idx)
+        
+        if not (is_note1 and is_note2):
             continue
             
-        v1 = blocky_f0[b_idx - 1]
-        v2 = blocky_f0[b_idx]
         diff = v2 - v1
-        
         if diff == 0:
             continue
             
@@ -286,27 +298,20 @@ def synthesize_chunk(sound_chunk, notes_chunk, chunk_start_sample, frame_period)
         start = b_idx - frames_before
         end = b_idx + frames_after
         
-        sig_start = 0
-        sig_end = trans_frames
+        vis_start = max(0, start)
+        vis_end = min(len(blocky_f0), end)
         
-        if start < 0:
-            sig_start = -start
-            start = 0
-        if end > len(blocky_f0):
-            sig_end = trans_frames - (end - len(blocky_f0))
-            end = len(blocky_f0)
+        if vis_start < vis_end:
+            idx_range = np.arange(vis_start, vis_end)
+            sig_idx = idx_range - start
             
-        if start < end:
-            idx_less = np.arange(start, b_idx)
-            idx_greater_eq = np.arange(b_idx, end)
+            mask_less = idx_range < b_idx
+            mask_greater_eq = idx_range >= b_idx
             
-            sig_idx_less = np.arange(sig_start, sig_start + len(idx_less))
-            sig_idx_greater_eq = np.arange(sig_start + len(idx_less), sig_end)
-            
-            if len(idx_less) > 0:
-                smoothed_f0[idx_less] += diff * sig_curve[sig_idx_less]
-            if len(idx_greater_eq) > 0:
-                smoothed_f0[idx_greater_eq] += diff * (sig_curve[sig_idx_greater_eq] - 1.0)
+            if np.any(mask_less):
+                smoothed_f0[idx_range[mask_less]] += diff * sig_curve[sig_idx[mask_less]]
+            if np.any(mask_greater_eq):
+                smoothed_f0[idx_range[mask_greater_eq]] += diff * (sig_curve[sig_idx[mask_greater_eq]] - 1.0)
                 
     f0_chunk[:] = smoothed_f0[:]
             
@@ -325,7 +330,7 @@ def synthesis(open_path, pre_render, bend_changed):
     #frame_period = 10.0 if pre_render else 5.0
     frame_period = 10.0 #謎のノイズ対策でとりあえずいつでも10
     
-    if cache is None or cache['open_path'] != open_path or len(notes) == 0 or last_singer_path != singer_path or bend_changed == True:
+    if cache is None or cache['open_path'] != open_path or len(notes) == 0 or last_singer_path != singer_path:
         # Full synthesis
         sound = connect_phonemes_list(notes)
         y = synthesize_chunk(sound, notes, 0, frame_period)
@@ -410,8 +415,27 @@ def synthesis(open_path, pre_render, bend_changed):
         
         analyze_end = end_sample + pad_right_new
         
-        sound_chunk = sound[analyze_start : analyze_end]
-        y_chunk = synthesize_chunk(sound_chunk, notes, analyze_start, frame_period)
+        analysis_pad_samples = int(0.1 * fs)
+        actual_analyze_start = max(0, analyze_start - analysis_pad_samples)
+        actual_analyze_start = int(actual_analyze_start / grid_size) * grid_size
+        extra_left = analyze_start - actual_analyze_start
+        
+        actual_analyze_end = min(len(sound), analyze_end + analysis_pad_samples)
+        extra_right = actual_analyze_end - analyze_end
+        extra_right = int(extra_right / grid_size) * grid_size
+        actual_analyze_end = analyze_end + extra_right
+        
+        sound_chunk = sound[actual_analyze_start : actual_analyze_end]
+        y_chunk_full = synthesize_chunk(sound_chunk, notes, actual_analyze_start, frame_period)
+        
+        if extra_left > 0 and extra_right > 0:
+            y_chunk = y_chunk_full[extra_left : -extra_right]
+        elif extra_left > 0:
+            y_chunk = y_chunk_full[extra_left:]
+        elif extra_right > 0:
+            y_chunk = y_chunk_full[:-extra_right]
+        else:
+            y_chunk = y_chunk_full
         
         # Splice y_chunk into prev_y
         new_y_list = []
