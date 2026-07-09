@@ -16,7 +16,7 @@ open_path = "" #fd.askopenfilename(title="プロジェクトファイルを選�
 output_file = ""
 warnings = []
 
-my_path = os.path.dirname(os.path.abspath(__file__))
+my_path = Path(__file__).resolve().parent
 
 #プロジェクトファイルからの情報(いったん定義)
 start_note = 0
@@ -53,12 +53,10 @@ def load_projectfile(open_path):
         elif line.startswith("output_dir: "):
             if is_pre_render:
                 if line[12:].strip() != "":
-                    out_dir = os.path.dirname(line[12:].strip())
-                    if os.path.basename(out_dir) == "bounced":
-                        out_dir = os.path.dirname(out_dir)
-                    output_file = os.path.join(out_dir, "pre_render.wav")
-                    # replace backward slash for consistency if we want but os.path is better
-                    output_file = output_file.replace("\\", "/") # keep path style unified
+                    out_dir = Path(line[12:].strip()).parent
+                    if out_dir.name == "bounced":
+                        out_dir = out_dir.parent
+                    output_file = str(out_dir / "pre_render.wav")
                 else:
                     output_file = "pre_render.wav"
             else:
@@ -82,21 +80,26 @@ def load_projectfile(open_path):
 
     #print("number_of_notes: " + str(number_of_notes))
 
-    if Path(singer_path + "/settings/音素片表.json").exists():
-        with open(singer_path + "/settings/音素片表.json", "r", encoding="utf-8") as f:
+    singer_texts_path = Path(singer_path) / "settings" / "音素片表.json"
+    singer_tones_path = Path(singer_path) / "settings" / "音階hz表.json"
+    builtin_texts_path = my_path / "settings" / "音素片表.json"
+    builtin_tones_path = my_path / "settings" / "音階hz表.json"
+
+    if singer_texts_path.exists():
+        with open(singer_texts_path, "r", encoding="utf-8") as f:
             texts = json.load(f)
     else:
-        with open(my_path + "/settings/音素片表.json", "r", encoding="utf-8") as f:
+        with open(builtin_texts_path, "r", encoding="utf-8") as f:
             texts = json.load(f)
-            
-    if Path(singer_path + "/settings/音階hz表.json").exists():
-        with open(singer_path + "/settings/音階hz表.json", "r", encoding="utf-8") as f:
+
+    if singer_tones_path.exists():
+        with open(singer_tones_path, "r", encoding="utf-8") as f:
             tones = json.load(f)
     else:
-        with open(my_path + "/settings/音階hz表.json", "r", encoding="utf-8") as f:
+        with open(builtin_tones_path, "r", encoding="utf-8") as f:
             tones = json.load(f)
 
-    with open(my_path + "/settings/音素片表.json", "r", encoding="utf-8") as f:
+    with open(builtin_texts_path, "r", encoding="utf-8") as f:
         texts_builtin = json.load(f)
 
 

@@ -87,7 +87,7 @@ clipboard = []
 current_file_path = None
 
 my_path = os.path.dirname(os.path.abspath(__file__))
-UI_PREFS_PATH = os.path.join(my_path, "settings", "ui_prefs.json")
+UI_PREFS_PATH = Path(my_path) / "settings" / "ui_prefs.json"
 
 # 表示言語（Preferences で変更） / バウンス範囲は内部フラグで保持（ラジオは言語依存のため）
 ui_language = "ja"
@@ -103,7 +103,7 @@ VIEW_LAYERS = (VIEW_LAYER_NOTE, VIEW_LAYER_LYRIC, VIEW_LAYER_PITCH)
 TOOL_INTERNAL = ("Select", "Pen", "Eraser", "Pitch Edit")
 
 UI_STR = {}
-with open(my_path + "/locale/lang.json", "r", encoding="utf-8") as f:
+with open(Path(my_path) / "locale" / "lang.json", "r", encoding="utf-8") as f:
     UI_STR = json.load(f)
 
 
@@ -515,15 +515,15 @@ def get_image_data(file_path):
 #画像変更
 def change_image_callback():
     # 新しい画像があったら読み込んでテクスチャを更新
-    new_image = Path(singer_path + "/image.png")
+    new_image = Path(singer_path) / "image.png"
     if new_image.exists():
-        new_data = get_image_data(singer_path + "/image.png")
+        new_data = get_image_data(Path(singer_path) / "image.png")
     else:
         new_data = None
     if new_data is not None:
         dpg.set_value("singer_icon", new_data)
     else:
-        dpg.set_value("singer_icon", get_image_data(my_path + "/images/no_image.png"))
+        dpg.set_value("singer_icon", get_image_data(Path(my_path) / "images" / "no_image.png"))
 
 #音源変更関連
 def singer_setting_callback():
@@ -554,21 +554,21 @@ def select_known_singer_callback(sender, app_data, user_data): #既知の音源�
 
 #既知の音源を追加
 def add_known_singer(this_name, this_singer_path):
-    if Path(this_singer_path + "/image.png").exists():
-        dpg.add_static_texture(width=50, height=50, default_value=get_image_data(this_singer_path + "/image.png"), tag=f"known_singer_{this_name}", parent="known_singers_texture_registry")
+    if (Path(this_singer_path) / "image.png").exists():
+        dpg.add_static_texture(width=50, height=50, default_value=get_image_data(Path(this_singer_path) / "image.png"), tag=f"known_singer_{this_name}", parent="known_singers_texture_registry")
     else:
-        dpg.add_static_texture(width=50, height=50, default_value=get_image_data(my_path + "/images/no_image.png"), tag=f"known_singer_{this_name}", parent="known_singers_texture_registry")
+        dpg.add_static_texture(width=50, height=50, default_value=get_image_data(Path(my_path) / "images" / "no_image.png"), tag=f"known_singer_{this_name}", parent="known_singers_texture_registry")
     #画像ボタンの下に名前
     dpg.add_group(horizontal=False, parent="known_singers_group", tag=f"known_singers_button_{this_name}")
     dpg.add_image_button(width=50, height=50, texture_tag=f"known_singer_{this_name}", callback=lambda s, a, u: select_known_singer_callback(s, a, u), user_data=this_singer_path, parent=f"known_singers_button_{this_name}")
     dpg.add_text(this_name, parent=f"known_singers_button_{this_name}")
 
 def add_known_singer_to_json(this_singer_path):
-    with open(my_path + "/settings/singers.json", "r", encoding="utf-8") as f:
+    with open(Path(my_path) / "settings" / "singers.json", "r", encoding="utf-8") as f:
         known_singers_now = json.load(f) #音源の辞書 name: path
     this_name = "Unknown" #初期値
-    if Path(this_singer_path + "/character.txt").exists():
-        with open(this_singer_path + "/character.txt", "r", encoding="utf-8") as f:
+    if (Path(this_singer_path) / "character.txt").exists():
+        with open(Path(this_singer_path) / "character.txt", "r", encoding="utf-8") as f:
             lines = f.readlines()
         if len(lines) > 0:
             for line in lines:
@@ -586,12 +586,12 @@ def add_known_singer_to_json(this_singer_path):
     else:
         new_name = this_name + "_" + str(len(known_singers_now))
         known_singers_now[new_name] = this_singer_path
-    with open(my_path + "/settings/singers.json", "w", encoding="utf-8") as f:
+    with open(Path(my_path) / "settings" / "singers.json", "w", encoding="utf-8") as f:
         json.dump(known_singers_now, f, ensure_ascii=False, indent=4)
 
 def set_known_singers_buttons():
     global known_singers
-    with open(my_path + "/settings/singers.json", "r", encoding="utf-8") as f:
+    with open(Path(my_path) / "settings" / "singers.json", "r", encoding="utf-8") as f:
         known_singers = json.load(f) #音源の辞書 name: path
     dpg.delete_item("known_singers_texture_registry", children_only=True) #テクスチャも全消し
     dpg.delete_item("known_singers_group", children_only=True) #一旦全消し
@@ -932,7 +932,7 @@ def handle_input():
             pmx, pmy = dpg.get_drawing_mouse_pos()
             my = pmy / zoom_y
             tone_num = 84 - int(my / CELL_H)
-            with open(my_path + "/settings/音階hz表.json", "r", encoding="utf-8") as f:
+            with open(Path(my_path) / "settings" / "音階hz表.json", "r", encoding="utf-8") as f:
                 tones_dict = json.load(f)
             hz = tones_dict[str(tone_num)]
             try:
@@ -1163,7 +1163,7 @@ def menu_new_2(sender, app_data): #menu_new()で確認取った上で(もしく�
 def open_file_callback(sender, app_data):
     global notes, current_file_path, GRID_WIDTH, singer_changed, bpm, singer_path, locator_L, locator_R, notes_changed, history_notes_changed, notes_history, setting_history, history_index, is_known_singer_added, is_saved, is_opend
     if "file_path_name" in app_data and app_data["file_path_name"]:
-        file_path = app_data["file_path_name"] + "/notes.json"
+        file_path = Path(app_data["file_path_name"]) / "notes.json"
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -1181,7 +1181,7 @@ def open_file_callback(sender, app_data):
                 GRID_WIDTH = snap(max_x, CELL_W * 4) + CELL_W * 4
             notes_changed = True
 
-            with open(app_data["file_path_name"] + "/others.json", "r", encoding="utf-8") as f:
+            with open(Path(app_data["file_path_name"]) / "others.json", "r", encoding="utf-8") as f:
                 others_data = json.load(f)
                 bpm = others_data.get("bpm", 120)
                 dpg.set_value("bpm_input", bpm)
@@ -1217,9 +1217,9 @@ def menu_save(sender, app_data):
     global notes, current_file_path, is_saved
     if current_file_path:
         try:
-            with open(current_file_path + "/notes.json", "w", encoding="utf-8") as f:
+            with open(Path(current_file_path) / "notes.json", "w", encoding="utf-8") as f:
                 json.dump({"notes": notes}, f, indent=4, ensure_ascii=False)
-            with open(current_file_path + "/others.json", "w", encoding="utf-8") as f:
+            with open(Path(current_file_path) / "others.json", "w", encoding="utf-8") as f:
                 json.dump({"bpm": bpm, "singer": singer_path, "locator_right": locator_R, "locator_left": locator_L}, f, indent=4, ensure_ascii=False)
             is_saved = True
         except Exception as e:
@@ -1230,9 +1230,9 @@ def menu_save(sender, app_data):
 def save_file_callback(sender, app_data):
     global notes, current_file_path, is_saved
     #current_file_pathのフォルダを作成
-    os.makedirs(app_data["file_path_name"], exist_ok=True)
+    Path(app_data["file_path_name"]).mkdir(parents=True, exist_ok=True)
     if "file_path_name" in app_data and app_data["file_path_name"]:
-        file_path = app_data["file_path_name"] + "/notes.json"
+        file_path = Path(app_data["file_path_name"]) / "notes.json"
         #if not file_path.endswith('.json') and not '.' in file_path.split('/')[-1]:
         #    file_path += '.json'
         #elif not file_path.endswith('json'):
@@ -1245,7 +1245,7 @@ def save_file_callback(sender, app_data):
             print(f"Error saving file: {e}")
 
     #その他bpm、シンガーなどの保存 others.json
-    others_path = app_data["file_path_name"] + "/others.json"
+    others_path = Path(app_data["file_path_name"]) / "others.json"
     try:
         with open(others_path, "w", encoding="utf-8") as f:
             json.dump({"bpm": bpm, "singer": singer_path, "locator_right": locator_R, "locator_left": locator_L}, f, indent=4, ensure_ascii=False)
@@ -1939,12 +1939,12 @@ def update():
 
             #info_textなどの更新
             dpg.set_value("singer_path_text", fmt_path_line(singer_path))
-            new_info = Path(singer_path + "/character.txt")
+            new_info = Path(singer_path) / "character.txt"
             if not new_info.exists():
                 dpg.set_value("info_text", tr("msg_no_char_txt"))
                 dpg.set_value("tooltip_text", tr("tip_no_char_txt"))
                 return
-            character_info = open(singer_path + "/character.txt", "r", encoding="utf-8")
+            character_info = open(Path(singer_path) / "character.txt", "r", encoding="utf-8")
             lines = character_info.readlines()
             line_val = 1
             for line in lines:
@@ -2064,7 +2064,7 @@ def resize_open_app_window():
 
 #=========================処理=========================
 #音源画像のデフォルト画像
-no_image_image = get_image_data(my_path + "/images/no_image.png")
+no_image_image = get_image_data(Path(my_path) / "images" / "no_image.png")
 
 
 dpg.create_context()
@@ -2072,10 +2072,10 @@ dpg.create_context()
 
 #フォントの設定
 with dpg.font_registry():
-    with dpg.font(my_path + "/fonts/NotoSansJP-Regular.otf", 16, tag="main_font"):
+    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Regular.otf", 16, tag="main_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
     dpg.bind_font("main_font")
-    with dpg.font(my_path + "/fonts/NotoSansJP-Medium.otf", 30, tag="medium_font"):
+    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 30, tag="medium_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
 
 #ファイルダイアログの設定

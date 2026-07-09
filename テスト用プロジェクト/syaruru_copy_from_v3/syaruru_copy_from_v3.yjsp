@@ -1,5 +1,5 @@
 name: syaruru_copy_from_v3
-sound_source_dir: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4
+sound_source_dir: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3
 output_dir: /Users/koumeifujioka/Projects/VOCALOID擬き/V5/テスト用プロジェクト/syaruru_copy_from_v3/bounced/syaruru_copy_from_v3.wav
 comment: 
 sampling_rate: 44100
@@ -12,643 +12,643 @@ duration: 1386868
 - position: 0
   duration: 109489
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 - position: 109489
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 118613
   duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 127737
-  duration: 13447
+  duration: 13686
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/o.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/o.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 141185
-  duration: 2282
+- position: 141424
+  duration: 4562
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/u.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/u.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 143467
-  duration: 16205
+- position: 145986
+  duration: 13686
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ta.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ta.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 159672
-  duration: 1523
+  duration: 4562
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 161195
-  duration: 16486
+- position: 164234
+  duration: 13686
   tone: 47
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 177681
-  duration: 2282
+- position: 177920
+  duration: 4562
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/u.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/u.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 179963
-  duration: 16205
+- position: 182482
+  duration: 13686
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ta.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ta.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 196168
-  duration: 1523
+  duration: 4562
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 197692
-  duration: 16827
+- position: 200731
+  duration: 17107
   tone: 47
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 214519
-  duration: 2299
+- position: 217838
+  duration: 1140
   tone: 42
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ku.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ku.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 216819
-  duration: 11045
+- position: 218979
+  duration: 9124
   tone: 44
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/mo.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 227864
-  duration: 7723
+- position: 228103
+  duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/u.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/u.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 235587
-  duration: 10525
+- position: 237227
+  duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/no.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/no.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 246112
-  duration: 9363
+- position: 246351
+  duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/u.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/u.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 255475
   duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 273724
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 282848
   duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 291972
-  duration: 7525
+  duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 299497
-  duration: 7883
+- position: 301096
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ni.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ni.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 307380
-  duration: 10485
+- position: 310220
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ko.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ko.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 317865
-  duration: 8003
+- position: 319344
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ri.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 325868
-  duration: 11724
+- position: 328468
+  duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ki.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ki.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 337593
-  duration: 6085
+  duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 343678
-  duration: 10964
+- position: 346717
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 354642
-  duration: 8563
+- position: 355841
+  duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/wa.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 363205
-  duration: 20008
+- position: 364965
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/mi.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 383213
-  duration: 17329
+  duration: 18248
   tone: 47
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 400543
-  duration: 10043
+- position: 401462
+  duration: 9124
   tone: 46
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/na.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/na.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 410586
   duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 419710
-  duration: 16929
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 436639
-  duration: 19567
+- position: 437958
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ya.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 456206
   duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 - position: 465331
-  duration: 7805
+  duration: 9124
   tone: 40
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 473136
-  duration: 19567
+- position: 474455
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ya.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 492703
   duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 - position: 501827
-  duration: 7805
+  duration: 9124
   tone: 40
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 509632
-  duration: 19567
+- position: 510951
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ya.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 529200
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 538324
   duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 547448
   duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 565696
-  duration: 23452
+  duration: 27372
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 589148
-  duration: 13044
+- position: 593068
+  duration: 9124
   tone: 32
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/to.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/to.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 602193
-  duration: 5805
+  duration: 9124
   tone: 32
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/o.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/o.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 607998
-  duration: 12443
+- position: 611317
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ku.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ku.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 620441
-  duration: 6644
+  duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 627085
-  duration: 11604
+- position: 629565
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ka.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ka.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 638689
-  duration: 6085
+  duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 644774
-  duration: 9644
+- position: 647813
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 654418
-  duration: 16847
+- position: 656937
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ta.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ta.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 671266
-  duration: 22168
+- position: 675186
+  duration: 18248
   tone: 40
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/hi.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 693434
   duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 702558
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 711682
-  duration: 11206
+  duration: 13686
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/o.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/o.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 722888
-  duration: 4523
+- position: 725368
+  duration: 4562
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ka.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ka.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 727412
-  duration: 16205
+- position: 729931
+  duration: 13686
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ta.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ta.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 743617
-  duration: 1523
+  duration: 4562
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 745140
-  duration: 14245
+- position: 748179
+  duration: 13686
   tone: 47
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 759385
-  duration: 4523
+- position: 761865
+  duration: 4562
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ka.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ka.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 763908
-  duration: 16205
+- position: 766427
+  duration: 13686
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ta.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ta.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 780113
-  duration: 1523
+  duration: 4562
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 781636
-  duration: 18267
+- position: 784675
+  duration: 17107
   tone: 47
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 799904
-  duration: 1060
+- position: 801783
+  duration: 1140
   tone: 42
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/yo.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 800965
-  duration: 10844
+- position: 802924
+  duration: 9124
   tone: 44
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ru.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 811809
-  duration: 7723
+- position: 812048
+  duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/u.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/u.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 819532
-  duration: 8324
+- position: 821172
+  duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/no.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/no.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 827856
-  duration: 10844
+- position: 830296
+  duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/mu.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 838700
-  duration: 18968
+- position: 839420
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/re.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 857668
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 866793
   duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/e.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/e.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 875917
   duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 - position: 885041
-  duration: 6644
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 891685
-  duration: 9844
+- position: 894165
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ka.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ka.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 901529
-  duration: 10884
+- position: 903289
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/mi.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 912413
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 921537
-  duration: 6085
+  duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 927623
-  duration: 9563
+- position: 930662
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 937186
-  duration: 10245
+- position: 939786
+  duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ki.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ki.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 947431
-  duration: 17247
+- position: 948910
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ri.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 964678
-  duration: 19809
+- position: 967158
+  duration: 18248
   tone: 47
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ka.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/ka.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 984487
-  duration: 10043
+- position: 985406
+  duration: 9124
   tone: 46
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/na.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/na.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 994531
   duration: 9124
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1003655
-  duration: 17329
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1020984
-  duration: 19167
+- position: 1021903
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/na.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/na.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1040151
   duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 - position: 1049275
-  duration: 8205
+  duration: 9124
   tone: 40
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1057481
-  duration: 19167
+- position: 1058400
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/na.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/na.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1076648
   duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 - position: 1085772
-  duration: 8205
+  duration: 9124
   tone: 40
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1093977
-  duration: 19167
+- position: 1094896
+  duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/na.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/na.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1113144
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1122268
   duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1131393
   duration: 18248
   tone: 39
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1149641
-  duration: 26173
+  duration: 27372
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 1175814
-  duration: 9243
+- position: 1177013
+  duration: 9124
   tone: 32
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/wa.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1185057
-  duration: 10204
+- position: 1186137
+  duration: 9124
   tone: 32
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ra.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1195262
   duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/i.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/i.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1204386
   duration: 9124
   tone: 37
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/a.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1213510
-  duration: 6085
+  duration: 9124
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
-- position: 1219595
-  duration: 8164
+- position: 1222634
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/te.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/te.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1227759
-  duration: 11244
+- position: 1231758
+  duration: 9124
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/sa.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/sa.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1239003
-  duration: 19208
+- position: 1240882
+  duration: 18248
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/yo.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1258212
-  duration: 18087
+- position: 1259131
+  duration: 18248
   tone: 34
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/na.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/na.wav
   bend_first: 0.05
   bend_second: 0.05
-- position: 1276299
-  duration: 19328
+- position: 1277379
+  duration: 18248
   tone: 35
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/ra.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/a.wav
   bend_first: 0.05
   bend_second: 0.05
 - position: 1295627
   duration: 91241
   tone: 84
-  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源4/単独音/r.wav
+  lyric: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3/単独音/r.wav
   bend_first: 0
   bend_second: 0
 end:

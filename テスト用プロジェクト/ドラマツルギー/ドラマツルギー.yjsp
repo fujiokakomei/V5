@@ -1,6 +1,6 @@
 name: ドラマツルギー
 sound_source_dir: /Users/koumeifujioka/Projects/VOCALOID擬き/テスト音源3
-output_dir: /Users/koumeifujioka/Projects/VOCALOID擬き/V5/テスト用プロジェクト/ドラマツルギー/bounced/ドラマツルギー_2026-0625-21-34-58.wav
+output_dir: /Users/koumeifujioka/Projects/VOCALOID擬き/V5/テスト用プロジェクト/ドラマツルギー/bounced/ドラマツルギー_2026-0709-22-05-06.wav
 comment: 
 sampling_rate: 44100
 buffer_size: 512

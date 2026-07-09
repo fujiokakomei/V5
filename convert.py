@@ -2,6 +2,8 @@
 import os
 from datetime import datetime
 import json
+from pathlib import Path
+
 def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_named, user_named_output_path):
     #未実装のやつら
     comment = ""
@@ -10,36 +12,35 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
     beat_per_bar = 4 #固定
     warnings = []
 
-    my_path = os.path.dirname(os.path.abspath(__file__))
+    my_path = Path(__file__).resolve().parent
 
-
-    if not file_path == None:
-        name = file_path.split("/")[-1]#先に名前だけ取得
-        file_path = file_path + "/notes.json"
-        output_path = file_path.replace("notes.json", name + ".yjsp")
-        output_dir = file_path.replace("notes.json", "bounced/" + name + ".wav")
+    if file_path is not None:
+        name = Path(file_path).name
+        file_path = Path(file_path) / "notes.json"
+        output_path = file_path.with_name(f"{name}.yjsp")
+        output_dir = file_path.parent / "bounced" / f"{name}.wav"
     else:
         name = "output_auto_saved"
-        file_path = "notes.json"
-        output_path = f"{name}.yjsp"
-        output_dir = f"{name}.wav"
+        file_path = Path("notes.json")
+        output_path = Path(f"{name}.yjsp")
+        output_dir = Path(f"{name}.wav")
 
-    if not user_named_output_path == None:
-        if not ".wav" in user_named_output_path:
-            user_named_output_path = user_named_output_path + ".wav"
-        user_named_output_path = os.path.abspath(user_named_output_path)
+    if user_named_output_path is not None:
+        if not user_named_output_path.endswith(".wav"):
+            user_named_output_path = f"{user_named_output_path}.wav"
+        user_named_output_path = Path(user_named_output_path).expanduser().resolve()
 
     #絶対パスに一応変換
-    file_path = os.path.abspath(file_path)
-    output_path = os.path.abspath(output_path)
-    output_dir = os.path.abspath(output_dir)
+    file_path = file_path.resolve()
+    output_path = output_path.resolve()
+    output_dir = output_dir.resolve()
 
     #bouncedフォルダがなければ作る
-    os.makedirs(output_dir.replace(name + ".wav", ""), exist_ok=True)
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
 
     #output_dirがあったら
-    if os.path.exists(output_dir):
-        output_dir = output_dir.replace(".wav", f"_{datetime.now().strftime('%Y-%m%d-%H-%M-%S')}.wav")
+    if output_dir.exists():
+        output_dir = output_dir.with_name(f"{output_dir.stem}_{datetime.now().strftime('%Y-%m%d-%H-%M-%S')}{output_dir.suffix}")
 
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(f"name: {name}\n")
@@ -114,28 +115,28 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
             notes_to_write.append(rest_note)
 
 
-        if os.path.exists(singer_path + "/settings/音素片表.json"):
-            f1 = open(singer_path + "/settings/音素片表.json", "r", encoding="utf-8")
-            texts = json.load(f1)
-            f1.close()
+        singer_texts_path = Path(singer_path) / "settings" / "音素片表.json"
+        builtin_texts_path = my_path / "settings" / "音素片表.json"
+        if singer_texts_path.exists():
+            with open(singer_texts_path, "r", encoding="utf-8") as f1:
+                texts = json.load(f1)
         else:
-            f1 = open(my_path + "/settings/音素片表.json", "r", encoding="utf-8")
-            texts = json.load(f1)
-            f1.close()
-        f2 = open(my_path + "/settings/音素片表.json", "r", encoding="utf-8")
-        texts_builtin = json.load(f2)
-        f2.close()
+            with open(builtin_texts_path, "r", encoding="utf-8") as f1:
+                texts = json.load(f1)
+        with open(builtin_texts_path, "r", encoding="utf-8") as f2:
+            texts_builtin = json.load(f2)
 
         
         #一拍が何サンプルか計算
         samples_per_beat = (60 / bpm) * sampling_rate
 
 
+        voice_dir = Path(singer_path) / "単独音"
         have_oto_ini = False
-        if os.path.exists(singer_path + "/単独音/oto.ini"):
-            oto_ini = open(singer_path + "/単独音/oto.ini", "r", encoding="utf-8")
-            oto_ini_lines = oto_ini.readlines()
-            oto_ini.close()
+        oto_ini_path = voice_dir / "oto.ini"
+        if oto_ini_path.exists():
+            with open(oto_ini_path, "r", encoding="utf-8") as oto_ini:
+                oto_ini_lines = oto_ini.readlines()
             have_oto_ini = True
         else:
             warnings.append("Warning: oto.ini not found in singer's 単独音 directory.")
@@ -157,18 +158,18 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
             lyric = note['lyric']
             lyric_path = ""
             if lyric in texts:
-                lyric_path = singer_path + "/単独音/" + texts[lyric] + ".wav"
+                lyric_path = voice_dir / f"{texts[lyric]}.wav"
             elif lyric in texts_builtin:
-                lyric_path = singer_path + "/単独音/" + texts_builtin[lyric] + ".wav"
-            elif lyric + ".wav" in os.listdir(singer_path + "/単独音/"):
-                lyric_path = singer_path + "/単独音/" + lyric + ".wav"
+                lyric_path = voice_dir / f"{texts_builtin[lyric]}.wav"
+            elif (voice_dir / f"{lyric}.wav").exists():
+                lyric_path = voice_dir / f"{lyric}.wav"
             else:
-                lyric_path = singer_path + "/単独音/a.wav"
+                lyric_path = voice_dir / "a.wav"
                 warnings.append(f"Warning: Lyric '{lyric}' not found in texts or as a wav file. Using 'a' as default.")
             
-            os.path.abspath(lyric_path)
+            lyric_path.resolve()
 
-            lyric_wav_name = lyric_path.split("/")[-1]
+            lyric_wav_name = lyric_path.name
             if have_oto_ini:
                 for line in oto_ini_lines:
                     if line.startswith(lyric_wav_name + "="):
@@ -184,16 +185,16 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
                             next_lyric = next_note['lyric']
                             next_lyric_path = ""
                             if next_lyric in texts:
-                                next_lyric_path = singer_path + "/単独音/" + texts[next_lyric] + ".wav"
-                            #elif next_lyric in texts_builtin:
-                            #    next_lyric_path = singer_path + "/単独音/" + texts_builtin[next_lyric] + ".wav"
-                            elif next_lyric + ".wav" in os.listdir(singer_path + "/単独音/"):
-                                next_lyric_path = singer_path + "/単独音/" + next_lyric + ".wav"
+                                next_lyric_path = voice_dir / f"{texts[next_lyric]}.wav"
+                            elif next_lyric in texts_builtin:
+                                next_lyric_path = voice_dir / f"{texts_builtin[next_lyric]}.wav"
+                            elif (voice_dir / f"{next_lyric}.wav").exists():
+                                next_lyric_path = voice_dir / f"{next_lyric}.wav"
                             else:
-                                next_lyric_path = singer_path + "/単独音/a.wav"
+                                next_lyric_path = voice_dir / "a.wav"
                                 warnings.append(f"Warning: Lyric '{next_lyric}' not found in texts or as a wav file. Using 'a' as default.")
                             
-                            next_lyric_wav_name = next_lyric_path.split("/")[-1]
+                            next_lyric_wav_name = next_lyric_path.name
                             for line2 in oto_ini_lines:
                                 if line2.startswith(next_lyric_wav_name + "="):
                                     next_line_offset = line2.strip().split("=")[1].split(",")[1] #単位はミリ秒
