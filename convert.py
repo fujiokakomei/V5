@@ -116,15 +116,17 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
 
 
         singer_texts_path = Path(singer_path) / "settings" / "音素片表.json"
-        builtin_texts_path = my_path / "settings" / "音素片表.json"
+        #builtin_texts_path = my_path / "settings" / "音素片表.json"
         if singer_texts_path.exists():
             with open(singer_texts_path, "r", encoding="utf-8") as f1:
                 texts = json.load(f1)
+        """
         else:
             with open(builtin_texts_path, "r", encoding="utf-8") as f1:
                 texts = json.load(f1)
         with open(builtin_texts_path, "r", encoding="utf-8") as f2:
             texts_builtin = json.load(f2)
+        """
 
         
         #一拍が何サンプルか計算
@@ -159,8 +161,8 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
             lyric_path = ""
             if lyric in texts:
                 lyric_path = voice_dir / f"{texts[lyric]}.wav"
-            elif lyric in texts_builtin:
-                lyric_path = voice_dir / f"{texts_builtin[lyric]}.wav"
+            #elif lyric in texts_builtin:
+            #    lyric_path = voice_dir / f"{texts_builtin[lyric]}.wav"
             elif (voice_dir / f"{lyric}.wav").exists():
                 lyric_path = voice_dir / f"{lyric}.wav"
             else:
@@ -186,8 +188,8 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
                             next_lyric_path = ""
                             if next_lyric in texts:
                                 next_lyric_path = voice_dir / f"{texts[next_lyric]}.wav"
-                            elif next_lyric in texts_builtin:
-                                next_lyric_path = voice_dir / f"{texts_builtin[next_lyric]}.wav"
+                            #elif next_lyric in texts_builtin:
+                            #    next_lyric_path = voice_dir / f"{texts_builtin[next_lyric]}.wav"
                             elif (voice_dir / f"{next_lyric}.wav").exists():
                                 next_lyric_path = voice_dir / f"{next_lyric}.wav"
                             else:
