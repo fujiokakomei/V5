@@ -1594,8 +1594,8 @@ def create_ui():
         with dpg.group(horizontal=True):
             dpg.add_button(label=tr("btn_cancel"), tag="close_cancel_btn", callback=lambda: dpg.configure_item("close_app_window", show=False), width=120, height=40)
             dpg.add_spacer(width=30)
-            dpg.add_button(label=tr("btn_save"), tag="close_save_btn", callback=save_and_close, width=100, height=40)
             dpg.add_button(label=tr("btn_discard"), tag="close_discard_btn", callback=lambda: dpg.stop_dearpygui(), width=100, height=40)
+            dpg.add_button(label=tr("btn_save"), tag="close_save_btn", callback=save_and_close, width=100, height=40)
 
     with dpg.window(label=tr("win_confirm"), modal=False, show=False, no_move=True, no_resize=True, tag="new_app_window", width=390, height=130):
         dpg.add_text(tr("txt_unsaved"), tag="new_unsaved_text")
