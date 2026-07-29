@@ -8,6 +8,8 @@ import os
 import sys
 import subprocess
 import platform
+import tkinter as tk
+from tkinter import filedialog as tk_filedialog
 import sounddevice as sd
 import soundfile as sf
 import simpleaudio
@@ -345,6 +347,70 @@ bg_warnings_text = ""
 
 
 
+#=========================Windows用tkinterファイルダイアログ=========================
+# DearPyGuiのfile_dialogはWindowsで日本語フォルダ名のフォルダに入ろうとするとクラッシュする既知のバグがある
+# Windows上ではtkinter.filedialogを使用してネイティブダイアログを表示する
+_IS_WINDOWS = platform.system() == "Windows"
+
+def _tk_ask_directory(callback, title=""):
+    """tkinterのネイティブフォルダ選択ダイアログを別スレッドで表示し、結果をcallbackに渡す"""
+    def _run():
+        root = tk.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        folder = tk_filedialog.askdirectory(title=title, parent=root)
+        root.destroy()
+        if folder:
+            # DearPyGuiのcallbackと同じ形式のapp_dataを作成
+            app_data = {"file_path_name": folder}
+            callback(None, app_data)
+    thread = threading.Thread(target=_run, daemon=True)
+    thread.start()
+
+def _tk_ask_save_file(callback, title="", default_ext=".wav", filetypes=None):
+    """tkinterのネイティブファイル保存ダイアログを別スレッドで表示し、結果をcallbackに渡す"""
+    if filetypes is None:
+        filetypes = [("WAV files", "*.wav"), ("All files", "*.*")]
+    def _run():
+        root = tk.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        file_path = tk_filedialog.asksaveasfilename(title=title, defaultextension=default_ext, filetypes=filetypes, parent=root)
+        root.destroy()
+        if file_path:
+            app_data = {"file_path_name": file_path}
+            callback(None, app_data)
+    thread = threading.Thread(target=_run, daemon=True)
+    thread.start()
+
+def show_open_file_dialog():
+    """プロジェクトを開くダイアログを表示"""
+    if _IS_WINDOWS:
+        _tk_ask_directory(open_file_callback, title=tr("dlg_open_project"))
+    else:
+        dpg.show_item("open_file_dialog")
+
+def show_save_file_dialog():
+    """プロジェクトを保存するダイアログを表示"""
+    if _IS_WINDOWS:
+        _tk_ask_directory(save_file_callback, title=tr("dlg_save_project"))
+    else:
+        dpg.show_item("save_file_dialog")
+
+def show_select_singer_dialog():
+    """シンガーを選択するダイアログを表示"""
+    if _IS_WINDOWS:
+        _tk_ask_directory(select_singer_callback, title=tr("dlg_select_singer"))
+    else:
+        dpg.show_item("select_singer_dialog")
+
+def show_select_output_path_dialog():
+    """WAV出力先を選択するダイアログを表示"""
+    if _IS_WINDOWS:
+        _tk_ask_save_file(select_output_file_callback, title=tr("dlg_select_wav"), default_ext=".wav", filetypes=[("WAV files", "*.wav"), ("All files", "*.*")])
+    else:
+        dpg.configure_item("select_output_path", show=True)
+
 #=========================関数など=========================
 #----------------終了処理----------------
 @atexit.register
@@ -532,7 +598,7 @@ def singer_setting_callback():
     #dpg.set_item_pos("singer_setting_window", dpg.get_mouse_pos())
 
 def select_singer_button_callback(sender, app_data):
-    dpg.show_item("select_singer_dialog")
+    show_select_singer_dialog()
 
 def select_singer_callback(sender, app_data): #音源の新規追加(既存の音源かもしれないけど)時
     global singer_path, singer_changed, info_text, history_notes_changed, is_known_singer_added
@@ -1208,7 +1274,7 @@ def open_file_callback(sender, app_data):
 def menu_open(sender, app_data):
     global is_saved
     if is_saved:
-        dpg.show_item("open_file_dialog")
+        show_open_file_dialog()
     else:
         dpg.configure_item("open_app_window", show=True)
         resize_open_app_window()
@@ -1255,7 +1321,7 @@ def save_file_callback(sender, app_data):
 
 
 def menu_save_as(sender, app_data):
-    dpg.show_item("save_file_dialog")
+    show_save_file_dialog()
 
 
 def select_output_file_callback(sender, app_data):
@@ -1295,11 +1361,11 @@ def delete_and_new():
 
 def save_and_open():
     menu_save(None, None)
-    dpg.show_item("open_file_dialog")
+    show_open_file_dialog()
     dpg.configure_item("open_app_window", show=False)
 
 def delete_and_open():
-    dpg.show_item("open_file_dialog")
+    show_open_file_dialog()
     dpg.configure_item("open_app_window", show=False)
 
 #----------------編集メニュー----------------
@@ -1573,7 +1639,7 @@ def create_ui():
         dpg.add_spacer()
         dpg.add_separator()
         dpg.add_spacer()
-        dpg.add_button(label=tr("btn_output_path"), callback=lambda: dpg.configure_item("select_output_path", show=True), width=100, height=30, tag="output_path_btn")
+        dpg.add_button(label=tr("btn_output_path"), callback=lambda: show_select_output_path_dialog(), width=100, height=30, tag="output_path_btn")
         dpg.add_text(tr("msg_output_to"), tag="output_to_text", wrap=380)
         dpg.add_button(label=tr("btn_bnc_export"), callback=rendering, width=80, height=30, pos=(220, 260), tag="bnc_btn")
         dpg.add_button(label=tr("btn_cancel"), callback=lambda: dpg.configure_item("bnc_window", show=False), width=80, height=30, pos=(310, 260), tag="bnc_cancel_btn")
