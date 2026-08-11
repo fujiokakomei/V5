@@ -8,6 +8,7 @@ import os
 import sys
 import subprocess
 import platform
+import ctypes
 import tkinter as tk
 from tkinter import filedialog as tk_filedialog
 import sounddevice as sd
@@ -87,6 +88,8 @@ last_time = 0.0
 notes = []
 clipboard = []
 current_file_path = None
+last_viewport_title = None
+windows_viewport_hwnd = None
 
 my_path = os.path.dirname(os.path.abspath(__file__))
 UI_PREFS_PATH = Path(my_path) / "settings" / "ui_prefs.json"
@@ -176,6 +179,89 @@ def fmt_path_line(path_val):
     if path_val:
         return f"{tr('path_prefix')}{path_val}"
     return tr("path_prefix_empty")
+
+
+def get_windows_viewport_hwnd():
+    global windows_viewport_hwnd
+    user32 = ctypes.windll.user32
+    user32.IsWindow.argtypes = [ctypes.c_void_p]
+    user32.IsWindow.restype = ctypes.c_bool
+    user32.GetWindowThreadProcessId.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_ulong)]
+    user32.IsWindowVisible.argtypes = [ctypes.c_void_p]
+    user32.IsWindowVisible.restype = ctypes.c_bool
+    user32.GetWindowTextLengthW.argtypes = [ctypes.c_void_p]
+    user32.GetWindowTextLengthW.restype = ctypes.c_int
+    user32.GetWindowTextW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_int]
+    user32.GetWindowTextW.restype = ctypes.c_int
+
+    if windows_viewport_hwnd and user32.IsWindow(ctypes.c_void_p(windows_viewport_hwnd)):
+        return windows_viewport_hwnd
+
+    try:
+        hwnd = int(dpg.get_viewport_platform_handle() or 0)
+        if hwnd and user32.IsWindow(ctypes.c_void_p(hwnd)):
+            windows_viewport_hwnd = hwnd
+            return windows_viewport_hwnd
+    except Exception:
+        pass
+
+    current_pid = os.getpid()
+    candidates = []
+
+    EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
+    user32.EnumWindows.argtypes = [EnumWindowsProc, ctypes.c_void_p]
+    user32.EnumWindows.restype = ctypes.c_bool
+
+    def enum_proc(hwnd, lparam):
+        hwnd_value = hwnd.value if hasattr(hwnd, "value") else int(hwnd)
+        pid = ctypes.c_ulong()
+        hwnd_ptr = ctypes.c_void_p(hwnd_value)
+        user32.GetWindowThreadProcessId(hwnd_ptr, ctypes.byref(pid))
+        if pid.value == current_pid and user32.IsWindowVisible(hwnd_ptr):
+            length = user32.GetWindowTextLengthW(hwnd_ptr)
+            buffer = ctypes.create_unicode_buffer(length + 1)
+            user32.GetWindowTextW(hwnd_ptr, buffer, length + 1)
+            candidates.append((hwnd_value, buffer.value))
+        return True
+
+    user32.EnumWindows(EnumWindowsProc(enum_proc), None)
+
+    for hwnd, window_title in candidates:
+        if window_title.startswith("V5"):
+            windows_viewport_hwnd = hwnd
+            return windows_viewport_hwnd
+
+    if len(candidates) == 1:
+        windows_viewport_hwnd = candidates[0][0]
+        return windows_viewport_hwnd
+
+    return None
+
+
+def set_app_viewport_title(title):
+    global last_viewport_title
+    title = str(title)
+
+    if platform.system() == "Windows":
+        try:
+            hwnd = get_windows_viewport_hwnd()
+            if hwnd:
+                user32 = ctypes.windll.user32
+                user32.SetWindowTextW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p]
+                user32.SetWindowTextW.restype = ctypes.c_int
+                if title == last_viewport_title:
+                    return
+                if user32.SetWindowTextW(ctypes.c_void_p(hwnd), title):
+                    last_viewport_title = title
+                    return
+        except Exception:
+            pass
+
+    if title == last_viewport_title:
+        return
+
+    dpg.set_viewport_title(title)
+    last_viewport_title = None if platform.system() == "Windows" else title
 
 
 def build_view_layer_checkboxes():
@@ -1947,7 +2033,7 @@ def update():
     #viewportのタイトル
     saved_text = " *" if not is_saved else ""
     path_text = f"    {current_file_path}" if not current_file_path == None else ""
-    dpg.set_viewport_title(f"V5{path_text}{saved_text}")
+    set_app_viewport_title(f"V5{path_text}{saved_text}")
 
 
     if is_playing:

@@ -229,6 +229,17 @@ def connect_phonemes_list(notes):
     return np.concatenate(sound_list) if sound_list else np.array([], dtype=np.float64)
 
 
+def fit_audio_length(audio, target_len):
+    target_len = max(0, int(target_len))
+    if len(audio) == target_len:
+        return audio
+    if len(audio) > target_len:
+        return audio[:target_len]
+    if len(audio) == 0:
+        return np.zeros(target_len, dtype=np.float64)
+    return np.pad(audio, (0, target_len - len(audio)), mode="constant")
+
+
 def synthesize_chunk(sound_chunk, notes_chunk, chunk_start_sample, frame_period):
     if len(sound_chunk) == 0:
         return np.array([], dtype=np.float64)
@@ -333,10 +344,12 @@ def synthesis(open_path, pre_render, bend_changed):
     #frame_period = 10.0 if pre_render else 5.0
     frame_period = 10.0 #謎のノイズ対策でとりあえずいつでも10
     
-    if cache is None or cache['open_path'] != open_path or len(notes) == 0 or last_singer_path != singer_path:
+    if (cache is None or not pre_render or bend_changed or cache['open_path'] != open_path
+            or len(notes) == 0 or last_singer_path != singer_path):
         # Full synthesis
         sound = connect_phonemes_list(notes)
         y = synthesize_chunk(sound, notes, 0, frame_period)
+        y = fit_audio_length(y, len(sound))
         last_singer_path = singer_path
     else:
         prev_notes = cache['notes']
@@ -379,7 +392,7 @@ def synthesis(open_path, pre_render, bend_changed):
             right_new += 1
         if right_prev < len(prev_notes) - 2:
             right_prev += 2
-        elif right_new < len(prev_notes) - 1:
+        elif right_prev < len(prev_notes) - 1:
             right_prev +=1
             
         start_sample = notes[left]['position'] if left < len(notes) else total_samples
@@ -394,13 +407,37 @@ def synthesis(open_path, pre_render, bend_changed):
         else:
             old_end_sample = old_start_sample
             
+        # Partial synthesis can only be spliced safely when the left edge of
+        # the changed region is anchored at the same sample in the old and new
+        # timelines. If that anchor moved, use the full synthesis path, which is
+        # the path that already produced correct results after reopening.
+        if start_sample != old_start_sample:
+            sound = connect_phonemes_list(notes)
+            y = synthesize_chunk(sound, notes, 0, frame_period)
+            y = fit_audio_length(y, len(sound))
+            last_singer_path = singer_path
+            output_file = os.path.abspath(output_file)
+            sf.write(output_file, y, fs)
+            _synth_cache[pre_render] = {
+                'open_path': open_path,
+                'notes': notes,
+                'sound': sound.copy(),
+                'y': y.copy(),
+                'duration_sec': duration_sec,
+                'total_samples': total_samples
+            }
+            if pre_render:
+                return output_file, warnings
+            return output_file
+
         # Rebuild sound for changed part
         changed_notes = notes[left : right_new + 1]
         changed_sound = connect_phonemes_list(changed_notes)
+        changed_sound = fit_audio_length(changed_sound, end_sample - start_sample)
         
         #合成
         sound = np.concatenate((
-            prev_sound[:start_sample],
+            prev_sound[:old_start_sample],
             changed_sound,
             prev_sound[old_end_sample:]
         ))
@@ -409,7 +446,7 @@ def synthesis(open_path, pre_render, bend_changed):
         analyze_start = start_sample - pad_left
         
         # WORLDのフレームグリッド(10ms = 441サンプル)に揃えることでピッチ変更のタイミングズレを防ぐ
-        grid_size = int(fs * 10 / 1000)
+        grid_size = int(fs * frame_period / 1000)
         analyze_start = int(analyze_start / grid_size) * grid_size
         pad_left = start_sample - analyze_start
         
@@ -430,6 +467,7 @@ def synthesis(open_path, pre_render, bend_changed):
         
         sound_chunk = sound[actual_analyze_start : actual_analyze_end]
         y_chunk_full = synthesize_chunk(sound_chunk, notes, actual_analyze_start, frame_period)
+        y_chunk_full = fit_audio_length(y_chunk_full, len(sound_chunk))
         
         if extra_left > 0 and extra_right > 0:
             y_chunk = y_chunk_full[extra_left : -extra_right]
@@ -439,6 +477,7 @@ def synthesis(open_path, pre_render, bend_changed):
             y_chunk = y_chunk_full[:-extra_right]
         else:
             y_chunk = y_chunk_full
+        y_chunk = fit_audio_length(y_chunk, analyze_end - analyze_start)
         
         # Splice y_chunk into prev_y
         new_y_list = []
@@ -483,6 +522,7 @@ def synthesis(open_path, pre_render, bend_changed):
             new_y_list.append(prev_y[old_end_sample + pad_right_old :])
             
         y = np.concatenate(new_y_list) if new_y_list else np.array([], dtype=np.float64)
+        y = fit_audio_length(y, len(sound))
 
     output_file = os.path.abspath(output_file)
     sf.write(output_file, y, fs)
