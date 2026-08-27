@@ -21,9 +21,10 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
         output_dir = file_path.parent / "bounced" / f"{name}.wav"
     else:
         name = "output_auto_saved"
-        file_path = Path("notes.json")
-        output_path = Path(f"{name}.yjsp")
-        output_dir = Path(f"{name}.wav")
+        settings_dir = my_path / "settings"
+        file_path = settings_dir / "notes.json"
+        output_path = settings_dir / f"{name}.yjsp"
+        output_dir = settings_dir / f"{name}.wav"
 
     if user_named_output_path is not None:
         if not user_named_output_path.endswith(".wav"):
