@@ -97,7 +97,11 @@
         "dlg_select_singer": "シンガーを選択/追加",
         "dlg_select_wav": "出力 WAV を選択",
         "ext_wav": "WAV ファイル{*}",
-        "ext_folders": "すべてのフォルダ{*}"
+        "ext_folders": "すべてのフォルダ{*}",
+        "open_hub":"Hubを開く",
+        "start":"開始",
+        "recent":"最近使用したプロジェクト",
+        "recent_empty":"最近使用したプロジェクトはありません"
     },
     "en": {
         "menu_file": "File",
@@ -197,6 +201,10 @@
         "dlg_select_singer": "Select/Add Singer",
         "dlg_select_wav": "Select Output WAV",
         "ext_wav": "WAV files{*}",
-        "ext_folders": "All folders{*}"
+        "ext_folders": "All folders{*}",
+        "open_hub":"Open Hub",
+        "start":"Start",
+        "recent":"Recent",
+        "recent_empty":"No recent projects"
     }
 }

@@ -93,10 +93,12 @@ windows_viewport_hwnd = None
 
 my_path = os.path.dirname(os.path.abspath(__file__))
 UI_PREFS_PATH = Path(my_path) / "settings" / "ui_prefs.json"
+RECENT_PROJECTS_LIMIT = 20
 
 # 表示言語（Preferences で変更） / バウンス範囲は内部フラグで保持（ラジオは言語依存のため）
 ui_language = "ja"
 bnc_range_is_full = True
+recent_projects = []
 
 LANG_COMBO_LABEL = {"ja": "日本語", "en": "English"}
 
@@ -116,8 +118,17 @@ def tr(key):
     return UI_STR.get(ui_language, UI_STR["ja"]).get(key) or UI_STR["ja"].get(key) or key
 
 
+def normalize_project_path(project_path):
+    if not project_path:
+        return None
+    try:
+        return os.path.abspath(os.path.expanduser(str(project_path)))
+    except Exception:
+        return str(project_path)
+
+
 def load_ui_prefs():
-    global ui_language
+    global ui_language, recent_projects
     try:
         p = Path(UI_PREFS_PATH)
         if p.exists():
@@ -126,6 +137,17 @@ def load_ui_prefs():
             lang = data.get("display_language", "ja")
             if lang in UI_STR:
                 ui_language = lang
+            loaded_recent = data.get("recent_projects", [])
+            recent_projects = []
+            seen_paths = set()
+            if isinstance(loaded_recent, list):
+                for project_path in loaded_recent:
+                    normalized_path = normalize_project_path(project_path)
+                    if normalized_path and normalized_path not in seen_paths:
+                        recent_projects.append(normalized_path)
+                        seen_paths.add(normalized_path)
+                        if len(recent_projects) >= RECENT_PROJECTS_LIMIT:
+                            break
     except Exception:
         pass
 
@@ -134,9 +156,44 @@ def save_ui_prefs():
     try:
         Path(UI_PREFS_PATH).parent.mkdir(parents=True, exist_ok=True)
         with open(UI_PREFS_PATH, "w", encoding="utf-8") as f:
-            json.dump({"display_language": ui_language}, f, ensure_ascii=False, indent=2)
+            json.dump({"display_language": ui_language, "recent_projects": recent_projects[:RECENT_PROJECTS_LIMIT]}, f, ensure_ascii=False, indent=2)
     except Exception:
         pass
+
+
+def remember_recent_project(project_path, refresh=True):
+    global recent_projects
+    normalized_path = normalize_project_path(project_path)
+    if not normalized_path:
+        return
+    recent_projects = [p for p in recent_projects if p != normalized_path]
+    recent_projects.insert(0, normalized_path)
+    recent_projects = recent_projects[:RECENT_PROJECTS_LIMIT]
+    save_ui_prefs()
+    if refresh:
+        refresh_recent_projects()
+
+
+def refresh_recent_projects():
+    if not dpg.does_item_exist("recent_projects_list"):
+        return
+    dpg.delete_item("recent_projects_list", children_only=True)
+    if not recent_projects:
+        dpg.add_text(tr("recent_empty"), parent="recent_projects_list", tag="recent_projects_empty_text")
+        return
+    for i, project_path in enumerate(recent_projects):
+        project_name = Path(project_path).name or project_path
+        button_tag = f"recent_project_btn_{i}"
+        dpg.add_button(
+            label=f"{project_name}\n{project_path}",
+            width=-1,
+            height=58,
+            tag=button_tag,
+            callback=open_recent_project,
+            user_data=project_path,
+            parent="recent_projects_list"
+        )
+        dpg.bind_item_font(button_tag, "medium3_font")
 
 
 def tool_combo_labels():
@@ -283,6 +340,7 @@ def apply_ui_language():
         ("mi_controls", "mi_controls"), ("mi_piano_roll", "mi_piano_roll"), ("mi_export_view", "mi_export"), ("mi_singer_setting", "mi_singer_setting"),
         ("mi_singer", "mi_singer"), ("mi_preferences", "mi_preferences"),
         ("mi_maximize", "mi_maximize"), ("mi_minimize", "mi_minimize"), ("mi_fullscreen", "mi_fullscreen"),
+        ("open_hub", "open_hub")
     ):
         if dpg.does_item_exist(tag):
             dpg.configure_item(tag, label=tr(key))
@@ -382,6 +440,19 @@ def apply_ui_language():
         dpg.configure_item("bnc_main_btn", label=tr("btn_bnc"))
     if dpg.does_item_exist("draw_item_checkbox"):
         build_view_layer_checkboxes()
+    if dpg.does_item_exist("start_child"):
+        dpg.configure_item("start_child", label=tr("start"))
+    if dpg.does_item_exist("start_info"):
+        dpg.set_value("start_info", tr("start"))
+    if dpg.does_item_exist("new_from_hub"):
+        dpg.configure_item("new_from_hub", label=tr("mi_new"))
+    if dpg.does_item_exist("open_from_hub"):
+        dpg.configure_item("open_from_hub", label=tr("mi_open"))
+    if dpg.does_item_exist("recent_projects"):
+        dpg.configure_item("recent_projects", label=tr("recent"))
+    if dpg.does_item_exist("proj_info"):
+        dpg.set_value("proj_info", tr("recent"))
+    refresh_recent_projects()
     # ファイルダイアログ
     if dpg.does_item_exist("open_file_dialog"):
         dpg.configure_item("open_file_dialog", label=tr("dlg_open_project"))
@@ -410,6 +481,8 @@ changed_playhead = False #再生中に再生バー移動した時
 notes_changed = False #ノート追加・削除・変更した時のみ再生前にレンダリング
 is_saved = True #変更が保存されているか
 is_opend = False #プロジェクトを開く、または新規作成した時にupdate()内のsinger_changedのとこのせいで未保存判定にされるのを防ぐ専用のフラグ
+pending_open_hub_after_save = False
+open_hub_after_save_ready = False
 volume = 1
 known_singers = [] #知っているシンガーのリスト
 is_known_singer_added = False #知っているシンガーが追加されたか
@@ -438,7 +511,7 @@ bg_warnings_text = ""
 # Windows上ではtkinter.filedialogを使用してネイティブダイアログを表示する
 _IS_WINDOWS = platform.system() == "Windows"
 
-def _tk_ask_directory(callback, title=""):
+def _tk_ask_directory(callback, title="", cancel_callback=None):
     """tkinterのネイティブフォルダ選択ダイアログを別スレッドで表示し、結果をcallbackに渡す"""
     def _run():
         root = tk.Tk()
@@ -450,6 +523,8 @@ def _tk_ask_directory(callback, title=""):
             # DearPyGuiのcallbackと同じ形式のapp_dataを作成
             app_data = {"file_path_name": folder}
             callback(None, app_data)
+        elif cancel_callback:
+            cancel_callback(None, None)
     thread = threading.Thread(target=_run, daemon=True)
     thread.start()
 
@@ -479,7 +554,7 @@ def show_open_file_dialog():
 def show_save_file_dialog():
     """プロジェクトを保存するダイアログを表示"""
     if _IS_WINDOWS:
-        _tk_ask_directory(save_file_callback, title=tr("dlg_save_project"))
+        _tk_ask_directory(save_file_callback, title=tr("dlg_save_project"), cancel_callback=cancel_pending_hub_after_save)
     else:
         dpg.show_item("save_file_dialog")
 
@@ -1312,15 +1387,16 @@ def menu_new_2(sender, app_data): #menu_new()で確認取った上で(もしく�
     history_index = 0
     notes = []
 
-def open_file_callback(sender, app_data):
+def load_project_from_path(project_path, refresh_recent=True):
     global notes, current_file_path, GRID_WIDTH, singer_changed, bpm, singer_path, locator_L, locator_R, notes_changed, history_notes_changed, notes_history, setting_history, history_index, is_known_singer_added, is_saved, is_opend
-    if "file_path_name" in app_data and app_data["file_path_name"]:
-        file_path = Path(app_data["file_path_name"]) / "notes.json"
+    normalized_project_path = normalize_project_path(project_path)
+    if normalized_project_path:
+        file_path = Path(normalized_project_path) / "notes.json"
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 notes = data.get("notes", [])
-                current_file_path = app_data["file_path_name"]
+                current_file_path = normalized_project_path
             #V3以前のプロジェクトを読み込んだ場合、というかnoteにbend_firstとbend_secondがなかった場合
             for i, note in enumerate(notes):
                 if not "bend_first" in note:
@@ -1333,7 +1409,7 @@ def open_file_callback(sender, app_data):
                 GRID_WIDTH = snap(max_x, CELL_W * 4) + CELL_W * 4
             notes_changed = True
 
-            with open(Path(app_data["file_path_name"]) / "others.json", "r", encoding="utf-8") as f:
+            with open(Path(normalized_project_path) / "others.json", "r", encoding="utf-8") as f:
                 others_data = json.load(f)
                 bpm = others_data.get("bpm", 120)
                 dpg.set_value("bpm_input", bpm)
@@ -1354,8 +1430,21 @@ def open_file_callback(sender, app_data):
 
             is_saved = True
             is_opend = True
+            remember_recent_project(normalized_project_path, refresh=refresh_recent)
+            return True
         except Exception as e:
             print(f"Error opening file: {e}")
+    return False
+
+
+def open_file_callback(sender, app_data):
+    if app_data and "file_path_name" in app_data and app_data["file_path_name"]:
+        load_project_from_path(app_data["file_path_name"])
+
+
+def open_recent_project(sender, app_data, user_data):
+    if load_project_from_path(user_data, refresh_recent=False):
+        hide_hub()
 
 def menu_open(sender, app_data):
     global is_saved
@@ -1364,6 +1453,46 @@ def menu_open(sender, app_data):
     else:
         dpg.configure_item("open_app_window", show=True)
         resize_open_app_window()
+
+def cancel_pending_hub_after_save(sender=None, app_data=None):
+    global pending_open_hub_after_save, open_hub_after_save_ready
+    pending_open_hub_after_save = False
+    open_hub_after_save_ready = False
+
+def close_open_hub_window():
+    cancel_pending_hub_after_save()
+    dpg.configure_item("open_hub_window", show=False)
+
+def queue_open_hub_after_save_if_needed():
+    global pending_open_hub_after_save, open_hub_after_save_ready
+    if pending_open_hub_after_save:
+        pending_open_hub_after_save = False
+        open_hub_after_save_ready = True
+
+def show_hub():
+    dpg.hide_item("main_window")
+    dpg.hide_item("singer_setting_window")
+    dpg.hide_item("lyric_input_window")
+    dpg.hide_item("rendering_window")
+    dpg.hide_item("output_path_window")
+    dpg.hide_item("bnc_window")
+    dpg.hide_item("draw_item_checkbox")
+    refresh_recent_projects()
+    dpg.set_primary_window("main_window", False)
+    dpg.show_item("hub_window")
+    dpg.set_primary_window("hub_window", True)
+
+def hide_hub():
+    dpg.hide_item("singer_setting_window")
+    dpg.hide_item("lyric_input_window")
+    dpg.hide_item("rendering_window")
+    dpg.hide_item("output_path_window")
+    dpg.hide_item("bnc_window")
+    dpg.hide_item("draw_item_checkbox")
+    dpg.set_primary_window("hub_window", False)
+    dpg.hide_item("hub_window")
+    dpg.set_primary_window("main_window", True)
+    dpg.show_item("main_window")
 
 def menu_save(sender, app_data):
     global notes, current_file_path, is_saved
@@ -1374,17 +1503,20 @@ def menu_save(sender, app_data):
             with open(Path(current_file_path) / "others.json", "w", encoding="utf-8") as f:
                 json.dump({"bpm": bpm, "singer": singer_path, "locator_right": locator_R, "locator_left": locator_L}, f, indent=4, ensure_ascii=False)
             is_saved = True
+            queue_open_hub_after_save_if_needed()
         except Exception as e:
+            cancel_pending_hub_after_save()
             print(f"Error saving file: {e}")
     else:
         menu_save_as(sender, app_data)
 
 def save_file_callback(sender, app_data):
     global notes, current_file_path, is_saved
-    #current_file_pathのフォルダを作成
-    Path(app_data["file_path_name"]).mkdir(parents=True, exist_ok=True)
-    if "file_path_name" in app_data and app_data["file_path_name"]:
-        file_path = Path(app_data["file_path_name"]) / "notes.json"
+    if app_data and "file_path_name" in app_data and app_data["file_path_name"]:
+        normalized_project_path = normalize_project_path(app_data["file_path_name"])
+        #current_file_pathのフォルダを作成
+        Path(normalized_project_path).mkdir(parents=True, exist_ok=True)
+        file_path = Path(normalized_project_path) / "notes.json"
         #if not file_path.endswith('.json') and not '.' in file_path.split('/')[-1]:
         #    file_path += '.json'
         #elif not file_path.endswith('json'):
@@ -1392,17 +1524,25 @@ def save_file_callback(sender, app_data):
         try:
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump({"notes": notes}, f, indent=4, ensure_ascii=False)
-                current_file_path = app_data["file_path_name"]
+                current_file_path = normalized_project_path
         except Exception as e:
+            cancel_pending_hub_after_save()
             print(f"Error saving file: {e}")
+            return
+    else:
+        cancel_pending_hub_after_save()
+        return
 
     #その他bpm、シンガーなどの保存 others.json
-    others_path = Path(app_data["file_path_name"]) / "others.json"
+    others_path = Path(current_file_path) / "others.json"
     try:
         with open(others_path, "w", encoding="utf-8") as f:
             json.dump({"bpm": bpm, "singer": singer_path, "locator_right": locator_R, "locator_left": locator_L}, f, indent=4, ensure_ascii=False)
         is_saved = True
+        remember_recent_project(current_file_path)
+        queue_open_hub_after_save_if_needed()
     except Exception as e:
+        cancel_pending_hub_after_save()
         print(f"Error saving others file: {e}")
 
 
@@ -1453,6 +1593,35 @@ def save_and_open():
 def delete_and_open():
     show_open_file_dialog()
     dpg.configure_item("open_app_window", show=False)
+
+def open_hub():
+    global is_saved
+    if is_saved == False:
+        dpg.configure_item("open_hub_window", show=True)
+        resize_open_hub_window()
+    else:
+        cleanup()
+        show_hub()
+
+def save_and_hub():
+    global pending_open_hub_after_save
+    pending_open_hub_after_save = True
+    menu_save(None, None)
+
+def delete_and_hub():
+    menu_new_2(None, None)
+    dpg.configure_item("open_hub_window", show=False)
+    open_hub()
+
+def new_from_hub():
+    hide_hub()
+    menu_new(None, None)
+
+def open_from_hub():
+    hide_hub()
+    menu_open(None, None)
+
+    
 
 #----------------編集メニュー----------------
 def menu_undo(sender, app_data):
@@ -1563,6 +1732,7 @@ def create_ui():
                 dpg.add_menu_item(label=tr("mi_new"), tag="mi_new", shortcut="Cmd+N", callback=menu_new)
                 dpg.add_separator()
                 dpg.add_menu_item(label=tr("mi_open"), tag="mi_open", shortcut="Cmd+O", callback=menu_open)
+                dpg.add_menu_item(label=tr("open_hub"), tag="open_hub", callback=open_hub)
                 dpg.add_separator()
                 dpg.add_menu_item(label=tr("mi_save"), tag="mi_save", shortcut="Cmd+S", callback=menu_save)
                 dpg.add_menu_item(label=tr("mi_save_as"), tag="mi_save_as", callback=menu_save_as, shortcut="Cmd+Shift+S")
@@ -1677,8 +1847,8 @@ def create_ui():
                     with dpg.group(horizontal=True):
                         dpg.add_button(label=" ＋ ", callback=add_measure, tag="add_btn")
                         dpg.add_button(label=" ー ", callback=remove_measure, tag="remove_btn")
-                        dpg.bind_item_font("add_btn", "bold_font")
-                        dpg.bind_item_font("remove_btn", "bold_font")
+                        #dpg.bind_item_font("add_btn", "bold_font")
+                        #dpg.bind_item_font("remove_btn", "bold_font")
 
             with dpg.group(horizontal=True):
                 with dpg.child_window(width=60, height=30, no_scrollbar=True):
@@ -1767,12 +1937,44 @@ def create_ui():
             dpg.add_button(label=tr("btn_save"), tag="open_save_btn", callback=save_and_open, width=100, height=40)
             dpg.add_button(label=tr("btn_discard"), tag="open_discard_btn", callback=delete_and_open, width=100, height=40)
 
+    with dpg.window(label=tr("win_confirm"), modal=False, show=False, no_move=True, no_resize=True, tag="open_hub_window", width=390, height=130):
+        dpg.add_text(tr("txt_unsaved"), tag="hub_unsaved_text")
+        dpg.add_spacer(height=20)
+        with dpg.group(horizontal=True):
+            dpg.add_button(label=tr("btn_cancel"), tag="hub_cancel_btn", callback=close_open_hub_window, width=120, height=40)
+            dpg.add_spacer(width=30)
+            dpg.add_button(label=tr("btn_save"), tag="hub_save_btn", callback=save_and_hub, width=100, height=40)
+            dpg.add_button(label=tr("btn_discard"), tag="hub_discard_btn", callback=delete_and_hub, width=100, height=40)
+
     with dpg.window(label=tr("win_preferences"), tag="preferences", show=False, width=600, height=400, modal=False, no_resize=True):
         with dpg.tab_bar():
             with dpg.tab(label=tr("prefs_tab_playback"), tag="prefs_tab_playback"):
                 dpg.add_combo(label=tr("prefs_output_device"), tag="output_device", callback=set_output_device, default_value=sd.query_devices(kind="output")["name"])
             with dpg.tab(label=tr("prefs_tab_display"), tag="prefs_tab_display"):
                 dpg.add_combo(label=tr("prefs_display_language"), tag="prefs_lang_combo", items=list(LANG_COMBO_LABEL.values()), default_value=LANG_COMBO_LABEL[ui_language], callback=on_display_language_changed, width=240)
+
+    with dpg.window(label="Hub Window", tag="hub_window", show=False):
+        with dpg.child_window(label=tr("start"), tag="start_child", height=150):
+            with dpg.group(horizontal=True):
+                dpg.add_spacer(width=10)
+                with dpg.group():
+                    dpg.add_text(tr("start"), tag="start_info")
+                    dpg.bind_item_font("start_info", "bold_font")
+                    with dpg.group(horizontal=True):
+                        dpg.add_button(label=tr("mi_new"), width=200, height=70, tag="new_from_hub", callback=new_from_hub)
+                        dpg.bind_item_font("new_from_hub", "medium2_font")
+                        dpg.add_button(label=tr("mi_open"), width=200, height=70, tag="open_from_hub", callback=open_from_hub)
+                        dpg.bind_item_font("open_from_hub", "medium2_font")
+        with dpg.child_window(label=tr("recent"), tag="recent_projects"):
+            with dpg.group(horizontal=True):
+                dpg.add_spacer(width=10)
+                with dpg.group(width=-1):
+                    dpg.add_text(tr("recent"), tag="proj_info")
+                    dpg.bind_item_font("proj_info", "medium_font")
+                    dpg.add_spacer(height=6)
+                    with dpg.group(tag="recent_projects_list", width=-1):
+                        pass
+
 
 
 def draw():
@@ -2028,12 +2230,17 @@ def draw():
 def update():
     global playhead_x, last_time, singer_changed, info_text, changed_playhead, notes, notes_changed, is_playing, history_notes_changed, singer_path, is_known_singer_added
     global is_rendering_background, pending_render, bg_pre_sound, bg_warnings_text, previously_rendering, pre_sound, GRID_WIDTH, is_auto_scroll
-    global is_saved, is_opend
+    global is_saved, is_opend, open_hub_after_save_ready
 
     #viewportのタイトル
     saved_text = " *" if not is_saved else ""
     path_text = f"    {current_file_path}" if not current_file_path == None else ""
     set_app_viewport_title(f"V5{path_text}{saved_text}")
+
+    if open_hub_after_save_ready:
+        open_hub_after_save_ready = False
+        dpg.configure_item("open_hub_window", show=False)
+        show_hub()
 
 
     if is_playing:
@@ -2212,6 +2419,11 @@ def resize_open_app_window():
     viewport_height = dpg.get_viewport_height()
     dpg.set_item_pos("open_app_window", (viewport_width // 2 -195, viewport_height // 2 - 65))
 
+def resize_open_hub_window():
+    viewport_width = dpg.get_viewport_width()
+    viewport_height = dpg.get_viewport_height()
+    dpg.set_item_pos("open_hub_window", (viewport_width // 2 -195, viewport_height // 2 - 65))
+
 
 
 #=========================処理=========================
@@ -2229,12 +2441,18 @@ with dpg.font_registry():
     dpg.bind_font("main_font")
     with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 30, tag="medium_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
+    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 40, tag="bold_font"):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
+    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 22, tag="medium2_font"):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
+    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Regular.otf", 19, tag="medium3_font"):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
 
 #ファイルダイアログの設定
 with dpg.file_dialog(label = tr("dlg_open_project"), directory_selector=True, show=False, callback=open_file_callback, tag="open_file_dialog", width=600, height=400):
     dpg.add_file_extension(tr("ext_folders"), color=(150, 255, 150, 255))
 
-with dpg.file_dialog(label = tr("dlg_save_project"), directory_selector=True, show=False, callback=save_file_callback, tag="save_file_dialog", width=600, height=400):
+with dpg.file_dialog(label = tr("dlg_save_project"), directory_selector=True, show=False, callback=save_file_callback, cancel_callback=cancel_pending_hub_after_save, tag="save_file_dialog", width=600, height=400):
     dpg.add_file_extension(tr("ext_folders"), color=(150, 255, 150, 255))
 
 with dpg.file_dialog(label = tr("dlg_select_singer"), directory_selector=True, show=False, callback=select_singer_callback, tag="select_singer_dialog", width=600, height=400):

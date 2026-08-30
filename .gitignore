@@ -1,3 +1,6 @@
 テスト用プロジェクト/
 __pycache__/
 .vscode/
+.DS_Store
+settings/pre_render.wav
+settings/output_auto_saved.yjsp
