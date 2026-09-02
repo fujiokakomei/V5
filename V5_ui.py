@@ -448,6 +448,10 @@ def apply_ui_language():
         dpg.configure_item("new_from_hub", label=tr("mi_new"))
     if dpg.does_item_exist("open_from_hub"):
         dpg.configure_item("open_from_hub", label=tr("mi_open"))
+    if dpg.does_item_exist("pref_from_hub"):
+        dpg.configure_item("pref_from_hub", label=tr("mi_preferences"))
+    if dpg.does_item_exist("singer_from_hub"):
+        dpg.configure_item("singer_from_hub", label=tr("mi_singer_setting"))
     if dpg.does_item_exist("recent_projects"):
         dpg.configure_item("recent_projects", label=tr("recent"))
     if dpg.does_item_exist("proj_info"):
@@ -1965,6 +1969,13 @@ def create_ui():
                         dpg.bind_item_font("new_from_hub", "medium2_font")
                         dpg.add_button(label=tr("mi_open"), width=200, height=70, tag="open_from_hub", callback=open_from_hub)
                         dpg.bind_item_font("open_from_hub", "medium2_font")
+                        #dpg.add_spacer(width=100)
+                        with dpg.group():
+                            dpg.add_spacer(height=25)
+                            dpg.add_button(label=tr("mi_preferences"), width=120, height=40, tag="pref_from_hub", callback=open_preferences)
+                        with dpg.group():
+                            dpg.add_spacer(height=25)
+                            dpg.add_button(label=tr("mi_singer_setting"), width=120, height=40, tag="singer_from_hub", callback=lambda:dpg.configure_item("singer_setting_window", show=not dpg.is_item_shown("singer_setting_window")))
         with dpg.child_window(label=tr("recent"), tag="recent_projects"):
             with dpg.group(horizontal=True):
                 dpg.add_spacer(width=10)
