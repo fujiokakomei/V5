@@ -1976,6 +1976,9 @@ def create_ui():
                         with dpg.group():
                             dpg.add_spacer(height=25)
                             dpg.add_button(label=tr("mi_singer_setting"), width=120, height=40, tag="singer_from_hub", callback=lambda:dpg.configure_item("singer_setting_window", show=not dpg.is_item_shown("singer_setting_window")))
+                        with dpg.group():
+                            dpg.add_spacer(height=25)
+                            dpg.add_button(label=tr("mi_quit"), width=120, height=40, tag="quit_from_hub", callback=check_is_saved)
         with dpg.child_window(label=tr("recent"), tag="recent_projects"):
             with dpg.group(horizontal=True):
                 dpg.add_spacer(width=10)
