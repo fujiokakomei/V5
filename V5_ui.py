@@ -452,6 +452,8 @@ def apply_ui_language():
         dpg.configure_item("pref_from_hub", label=tr("mi_preferences"))
     if dpg.does_item_exist("singer_from_hub"):
         dpg.configure_item("singer_from_hub", label=tr("mi_singer_setting"))
+    if dpg.does_item_exist("quit_from_hub"):
+        dpg.configure_item("quit_from_hub", label=tr("mi_quit"))
     if dpg.does_item_exist("recent_projects"):
         dpg.configure_item("recent_projects", label=tr("recent"))
     if dpg.does_item_exist("proj_info"):
