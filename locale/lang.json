@@ -101,7 +101,8 @@
         "open_hub":"Hubを開く",
         "start":"開始",
         "recent":"最近使用したプロジェクト",
-        "recent_empty":"最近使用したプロジェクトはありません"
+        "recent_empty":"最近使用したプロジェクトはありません",
+        "mi_help":"ヘルプ"
     },
     "en": {
         "menu_file": "File",
@@ -205,6 +206,7 @@
         "open_hub":"Open Hub",
         "start":"Start",
         "recent":"Recent",
-        "recent_empty":"No recent projects"
+        "recent_empty":"No recent projects",
+        "mi_help":"Help"
     }
 }

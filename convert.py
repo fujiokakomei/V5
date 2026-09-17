@@ -1,5 +1,6 @@
 #notes[]からyjspへの変換モジュール
 import os
+import sys
 from datetime import datetime
 import json
 from pathlib import Path
@@ -12,7 +13,7 @@ def convert_notes_to_yjsp(notes, file_path, singer_path, bpm, grid_width, user_n
     beat_per_bar = 4 #固定
     warnings = []
 
-    my_path = Path(__file__).resolve().parent
+    my_path = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 
     if file_path is not None:
         name = Path(file_path).name

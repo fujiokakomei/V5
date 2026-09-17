@@ -6,6 +6,7 @@ import json
 
 import tkinter.filedialog as fd
 import os
+import sys
 
 from pathlib import Path
 
@@ -16,7 +17,8 @@ open_path = "" #fd.askopenfilename(title="プロジェクトファイルを選�
 output_file = ""
 warnings = []
 
-my_path = Path(__file__).resolve().parent
+# PyInstaller で実行した場合は、同梱データが展開される場所を基準にする。
+my_path = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 
 #プロジェクトファイルからの情報(いったん定義)
 start_note = 0

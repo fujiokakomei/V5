@@ -17,6 +17,9 @@ import simpleaudio
 import atexit
 import copy
 import threading
+import shutil
+import tempfile
+import webbrowser
 #自作モジュール
 import convert
 import synthesis
@@ -91,7 +94,49 @@ current_file_path = None
 last_viewport_title = None
 windows_viewport_hwnd = None
 
-my_path = os.path.dirname(os.path.abspath(__file__))
+# PyInstaller で実行した場合は、同梱データが展開される場所を基準にする。
+# PyInstaller 6 のフォルダ形式では、同梱データが exe の隣ではなく
+# _internal に配置される。_MEIPASS が親フォルダを指す環境にも対応する。
+my_path = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+if getattr(sys, "frozen", False) and not (my_path / "fonts").is_dir():
+    internal_data_path = Path(sys.executable).resolve().parent / "_internal"
+    if internal_data_path.is_dir():
+        my_path = internal_data_path
+my_path = os.fspath(my_path)
+
+
+def get_dearpygui_font_path(font_name):
+    """Return a font path that Dear PyGui can open on Windows.
+
+    Dear PyGui currently cannot load fonts through a path containing
+    non-ASCII characters.  Distribution folders may have Japanese names, so
+    copy the font to an ASCII-only temporary directory when necessary.
+    """
+    source_path = Path(my_path) / "fonts" / font_name
+    if str(source_path).isascii():
+        return source_path
+
+    candidate_roots = [Path(tempfile.gettempdir())]
+    public_dir = os.environ.get("PUBLIC")
+    if public_dir:
+        candidate_roots.append(Path(public_dir))
+
+    for root in candidate_roots:
+        if not str(root).isascii():
+            continue
+        cache_path = root / "V5-font-cache" / font_name
+        try:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            if not cache_path.exists() or cache_path.stat().st_size != source_path.stat().st_size:
+                shutil.copy2(source_path, cache_path)
+            return cache_path
+        except OSError:
+            continue
+
+    # A direct path gives Dear PyGui its usual error if no usable cache is available.
+    return source_path
+
+
 UI_PREFS_PATH = Path(my_path) / "settings" / "ui_prefs.json"
 RECENT_PROJECTS_LIMIT = 20
 
@@ -456,6 +501,8 @@ def apply_ui_language():
         dpg.configure_item("quit_from_hub", label=tr("mi_quit"))
     if dpg.does_item_exist("recent_projects"):
         dpg.configure_item("recent_projects", label=tr("recent"))
+    if dpg.does_item_exist("mi_help"):
+        dpg.configure_item("mi_help", label=tr("mi_help"))
     if dpg.does_item_exist("proj_info"):
         dpg.set_value("proj_info", tr("recent"))
     refresh_recent_projects()
@@ -1762,6 +1809,7 @@ def create_ui():
                 dpg.add_menu_item(label=tr("mi_singer"), tag="mi_singer", callback=lambda:dpg.configure_item("select_singer_dialog", show=True))
             with dpg.menu(label=tr("menu_tools"), tag="menu_tools"):
                 dpg.add_menu_item(label=tr("mi_preferences"), tag="mi_preferences", callback=open_preferences)
+                dpg.add_menu_item(label=tr("help"), tag="mi_help", callback=lambda:webbrowser.open("https://github.com/fujiokakomei/V5"))
             with dpg.menu(label=tr("menu_window"), tag="menu_window"):
                 dpg.add_menu_item(label=tr("mi_maximize"), tag="mi_maximize", callback=dpg.maximize_viewport)
                 dpg.add_menu_item(label=tr("mi_minimize"), tag="mi_minimize", callback=dpg.minimize_viewport)
@@ -2452,16 +2500,16 @@ dpg.create_context()
 
 #フォントの設定
 with dpg.font_registry():
-    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Regular.otf", 16, tag="main_font"):
+    with dpg.font(get_dearpygui_font_path("NotoSansJP-Regular.otf"), 16, tag="main_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
     dpg.bind_font("main_font")
-    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 30, tag="medium_font"):
+    with dpg.font(get_dearpygui_font_path("NotoSansJP-Medium.otf"), 30, tag="medium_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
-    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 40, tag="bold_font"):
+    with dpg.font(get_dearpygui_font_path("NotoSansJP-Medium.otf"), 40, tag="bold_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
-    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Medium.otf", 22, tag="medium2_font"):
+    with dpg.font(get_dearpygui_font_path("NotoSansJP-Medium.otf"), 22, tag="medium2_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
-    with dpg.font(Path(my_path) / "fonts" / "NotoSansJP-Regular.otf", 19, tag="medium3_font"):
+    with dpg.font(get_dearpygui_font_path("NotoSansJP-Regular.otf"), 19, tag="medium3_font"):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Japanese)
 
 #ファイルダイアログの設定
