@@ -10,3 +10,6 @@ build/
 V5展示用/
 展示用改/
 V5.spec
+mac実行ファイル/
+dist/
+V5_ui.spec
